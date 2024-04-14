@@ -1,7 +1,6 @@
 #include <FastLED.h>
 
-#define LED_PIN 5
-#define DATA_PIN LED_PIN
+#define DATA_PIN 1
 #define NUM_LEDS 30
 
 #define ANALOG_PIN_WIDTH 1
@@ -10,7 +9,7 @@
 CRGB leds[NUM_LEDS];
 
 void setup() {
-  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2811, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(255);
 }
 
