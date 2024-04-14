@@ -13,7 +13,7 @@
 1. Fork the Project
 2. Clone repo with your GitHub username instead of ```YOUR-USERNAME```:<br>
 ```
-$ git clone https://github.com/YOUR-USERNAME/sh-nlp-entities
+$ git clone https://github.com/YOUR-USERNAME/ALED-module
 ```
 3. Create new branch:<br>
 ```
