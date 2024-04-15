@@ -31,7 +31,6 @@ void loop() {
 
   for (int i = mappedValue - led_range; i <= mappedValue + led_range; i++) {
     int ledIndex = constrain(i, 0, NUM_LEDS - 1);
-    leds[ledIndex] = CRGB::Green;
-  }
+    leds[ledIndex].green = min(leds[ledIndex].green + 5, 255); 
   FastLED.show();
 }
