@@ -1,37 +1,37 @@
 #include <FastLED.h>
 
-#define DATA_PIN 1
-#define NUM_LEDS 30
-
-#define ANALOG_PIN_WIDTH 1
-#define ANALOG_PIN_POSITION 2
+#define LED_PIN           2
+#define NUM_LEDS          51
+#define BRIGHTNESS        255
+#define ANALOG_PIN        A0
+#define ANALOG_RANGE_PIN  A1
 
 CRGB leds[NUM_LEDS];
+int led_range = 0;
 
 void setup() {
-  FastLED.addLeds<WS2811, DATA_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(255);
+  Serial.begin(9600);
+  FastLED.addLeds<WS2811, LED_PIN, RGB>(leds, NUM_LEDS);
+  FastLED.setBrightness(BRIGHTNESS);
+  pinMode(ANALOG_PIN, INPUT);
+  pinMode(ANALOG_RANGE_PIN, INPUT);
 }
 
 void loop() {
-  int widthValue = analogRead(ANALOG_PIN_WIDTH);
-  int positionValue = analogRead(ANALOG_PIN_POSITION);
+  int analogValue = analogRead(ANALOG_PIN);
+  int mappedValue = map(analogValue, 532, 666, 0, NUM_LEDS - 1);
 
-  float widthNormalized = (float)widthValue / (float)analogReadResolution * 255;
-  float positionNormalized = (float)positionValue / (float)analogReadResolution * 255;
-
-  int startIndex = (int)(positionNormalized * (NUM_LEDS - widthNormalized));
-  int endIndex = startIndex + widthNormalized;
+  int rangeValue = analogRead(ANALOG_RANGE_PIN);
+  led_range = map(rangeValue, 640, 666, 0, 10);
+  mappedValue = constrain(mappedValue, led_range, NUM_LEDS - 1 - led_range);
 
   for (int i = 0; i < NUM_LEDS; i++) {
-    if (i < startIndex || i >= endIndex) {
-      leds[i] = leds[i] * 0.95;
-    }
+    leds[i].fadeToBlackBy(5);
   }
 
-  for (int i = startIndex; i < endIndex; i++) {
-    leds[i] = CRGB::ColorFromHex16(0xFFFF00);
+  for (int i = mappedValue - led_range; i <= mappedValue + led_range; i++) {
+    int ledIndex = constrain(i, 0, NUM_LEDS - 1);
+    leds[ledIndex] = CRGB::Green;
   }
-
   FastLED.show();
 }
