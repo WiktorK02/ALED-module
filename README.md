@@ -1,14 +1,14 @@
 # ALED-module
-### schematic
-![](https://github.com/WiktorK02/ALED-module/assets/123249470/825f5745-e9d7-4f31-9e51-5024db4b6dc2)
-### 2D PCB layout
-![](https://github.com/WiktorK02/ALED-module/assets/123249470/41118707-ba0a-4ee4-b3b9-b304d5edf4e0)
+
 ### 3D PCB layout + components
 ![](https://github.com/WiktorK02/ALED-module/assets/123249470/a3a85da0-7c97-4d97-af20-820a503ff207)
 
 ## Task list
-* test code
-* fix upper module GP8501
+- [x] test code 
+- [x] fix upper module GP8501
+- [ ] smooth analog values from led_width_mconf.cpp
+- [ ] test out with esp32
+- [ ] configure mapped values with reference 3.3v 
 ## How to Contribute
 1. Fork the Project
 2. Clone repo with your GitHub username instead of ```YOUR-USERNAME```:<br>
