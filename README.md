@@ -1,4 +1,8 @@
 # ALED-module
+<p align="center">
+  <img src="https://github.com/WiktorK02/ALED-module/assets/123249470/9a79acc4-f7d6-4146-9437-0b07264b8eae" alt="Opis obrazka">
+</p>
+Module for addressable LEDs that allows programming and connection with Ampio Smart Home automation
 
 ### 3D PCB layout + components
 ![](https://github.com/WiktorK02/ALED-module/assets/123249470/a3a85da0-7c97-4d97-af20-820a503ff207)
