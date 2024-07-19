@@ -250,9 +250,9 @@ int logMapping(int step, int totalSteps, int numLeds) {
 
 // Parametry taśmy LED
 #define NUM_LEDS 50       // Całkowita liczba diod LED na taśmie
-#define DATA_PIN_1 5      // Pin danych dla pierwszego segmentu
-#define DATA_PIN_2 3      // Pin danych dla drugiego segmentu
-#define DATA_PIN_3 9      // Pin danych dla trzeciego segmentu
+#define DATA_PIN_1 1      // Pin danych dla pierwszego segmentu
+#define DATA_PIN_2 2      // Pin danych dla drugiego segmentu
+#define DATA_PIN_3 3      // Pin danych dla trzeciego segmentu
 #define BUTTON_PIN_12 12  // Pin do przełączania pierwszego efektu
 #define BUTTON_PIN_13 13  // Pin do zmiany kierunku drugiego efektu
 
