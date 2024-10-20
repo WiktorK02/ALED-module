@@ -1,23 +1,23 @@
 #include <FastLED.h>
 #include <math.h>
 
-// Parametry taśmy LED
-#define NUM_LEDS 50       // Całkowita liczba diod LED na taśmie
-#define DATA_PIN_1 5      // Pin danych dla pierwszego segmentu
-#define DATA_PIN_2 3      // Pin danych dla drugiego segmentu
-#define DATA_PIN_3 9      // Pin danych dla trzeciego segmentu
-#define BUTTON_PIN_12 12  // Pin do przełączania pierwszego efektu
-#define BUTTON_PIN_13 13  // Pin do zmiany kierunku drugiego efektu
+// LED strip parameters
+#define NUM_LEDS 50       // Total number of LEDs on the strip
+#define DATA_PIN_1 5      // Data pin for the first segment
+#define DATA_PIN_2 3      // Data pin for the second segment
+#define DATA_PIN_3 9      // Data pin for the third segment
+#define BUTTON_PIN_12 12  // Pin to toggle the first effect
+#define BUTTON_PIN_13 13  // Pin to change the direction of the second effect
 
-#define NUM_LEDS1 NUM_LEDS // Liczba diod LED dla pierwszego segmentu (pełna taśma)
-#define NUM_LEDS2 NUM_LEDS // Liczba diod LED dla drugiego segmentu (2/3 taśmy)
-#define NUM_LEDS3 NUM_LEDS // Liczba diod LED dla trzeciego segmentu (1/3 taśmy)
+#define NUM_LEDS1 NUM_LEDS // Number of LEDs for the first segment (full strip)
+#define NUM_LEDS2 NUM_LEDS // Number of LEDs for the second segment (2/3 of the strip)
+#define NUM_LEDS3 NUM_LEDS // Number of LEDs for the third segment (1/3 of the strip)
 
 CRGB leds1[NUM_LEDS1];
 CRGB leds2[NUM_LEDS2];
 CRGB leds3[NUM_LEDS3];
 
-// Parametry pierwszego efektu
+// Parameters for the first effect
 const int analogInPin1 = A0;
 const int analogInPin2 = A1;
 const int analogInPin3 = A2;
@@ -29,7 +29,7 @@ int sensorReadings3[numReadings];
 int sensorReadings4[numReadings];
 int currentIndex = 0;
 
-// Parametry drugiego efektu
+// Parameters for the second effect
 uint8_t gHue = 0;
 bool reachedEnd1 = false;
 bool reachedEnd2 = false;
@@ -40,7 +40,7 @@ int currentStep3 = 0;
 bool forwardDirection = false;
 const int totalSteps = 100;
 
-// Flagi i stany
+// Flags and states
 bool buttonPressed12 = false;
 bool lastButtonState12 = HIGH;
 bool buttonPressed13 = false;
@@ -71,12 +71,12 @@ void setup() {
 }
 
 void loop() {
-  // Odczyt stanów przycisków
+  // Read button states
   bool buttonState12 = digitalRead(BUTTON_PIN_12);
   bool buttonState13 = digitalRead(BUTTON_PIN_13);
 
   if (buttonState12 == LOW && lastButtonState12 == HIGH) {
-    // Resetowanie flag i kroków
+    // Reset flags and steps
     reachedEnd1 = false;
     reachedEnd2 = false;
     reachedEnd3 = false;
@@ -86,11 +86,11 @@ void loop() {
     forwardDirection = false;
     
     gHue = 0;
-    firstEffectActive = !firstEffectActive; // Przełączanie stanu efektu
+    firstEffectActive = !firstEffectActive; // Toggle effect state
   }
   lastButtonState12 = buttonState12;
 
-  // Obsługa naciśnięcia przycisku 13
+  // Handle button 13 press
   if (buttonState13 == LOW && lastButtonState13 == HIGH) {
     if(isBriNotMax(leds1, NUM_LEDS1) || isBriNotMax(leds2, NUM_LEDS2) || isBriNotMax(leds3, NUM_LEDS3)){
       Serial.println("true");
@@ -111,19 +111,19 @@ void loop() {
 }
 
 void runFirstEffect() {
-  int sensorValue2 = 252 - analogRead(analogInPin2); // jasność
-  int sensorValue3 = 112 - analogRead(analogInPin3); // zasięg
-  int sensorValue4 = 79 - analogRead(analogInPin4); // pozycja
+  int sensorValue2 = 252 - analogRead(analogInPin2); // brightness
+  int sensorValue3 = 112 - analogRead(analogInPin3); // range
+  int sensorValue4 = 79 - analogRead(analogInPin4); // position
 
-  // Dodanie nowych odczytów do tablicy
+  // Add new readings to the array
   sensorReadings2[currentIndex] = sensorValue2;
   sensorReadings3[currentIndex] = sensorValue3;
   sensorReadings4[currentIndex] = sensorValue4;
 
-  // Inkremetowanie currentIndex lub owijanie
+  // Increment currentIndex or wrap around
   currentIndex = (currentIndex + 1) % numReadings;
 
-  // Obliczanie średniej
+  // Calculate the average
   int total2 = 0, total3 = 0, total4 = 0;
   for (int i = 0; i < numReadings; i++) {
     total2 += sensorReadings2[i];
@@ -137,17 +137,17 @@ void runFirstEffect() {
   if (mapped_analog_brightness < 0) mapped_analog_brightness = 0;
   FastLED.setBrightness(mapped_analog_brightness);
 
-  // Zapewnienie minimalnej długości efektu to 1 LED
+  // Ensure minimum effect length is 1 LED
   led_range = max(led_range, 1);
 
-  // Ograniczenie mappedValue do zakresu tablicy LED
+  // Constrain mappedValue to the range of the LED array
   mappedValue = constrain(mappedValue, 0, NUM_LEDS - 1);
 
-  // Zapewnienie, że led_range nie powoduje przekroczenia liczby diod LED
+  // Ensure that led_range does not exceed the number of LEDs
   int startIndex = constrain(mappedValue - led_range, 0, NUM_LEDS - 1);
   int endIndex = constrain(mappedValue + led_range, 0, NUM_LEDS - 1);
 
-  // Dostosowanie startIndex i endIndex, aby zapewnić aktywność co najmniej 1 LED
+  // Adjust startIndex and endIndex to ensure at least 1 LED is active
   if (endIndex - startIndex < 1) {
     if (startIndex > 0) {
       endIndex = startIndex + 1;
@@ -156,14 +156,14 @@ void runFirstEffect() {
     }
   }
 
-  // Wygaszenie wszystkich LED przed zastosowaniem nowego efektu
+  // Fade all LEDs before applying the new effect
   for (int i = 0; i < NUM_LEDS; i++) {
     leds1[i].fadeToBlackBy(5); 
     leds2[i].fadeToBlackBy(5); 
     leds3[i].fadeToBlackBy(5);  
   }
 
-  // Ustawienie zakresu LED na biały
+  // Set the LED range to white
   for (int i = startIndex; i <= endIndex; i++) {
     leds1[i] = CRGB::White;
     leds2[i] = CRGB::White;
